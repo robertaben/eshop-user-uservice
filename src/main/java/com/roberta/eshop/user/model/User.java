@@ -2,13 +2,14 @@ package com.roberta.eshop.user.model;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,8 +34,13 @@ public class User {
     @Column(name = "updated_at", nullable = false)
     private Date updated;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Address> addresses;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "users_hobbies", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "hobby_id", referencedColumnName = "hobby_id"))
+    private List<Hobby> hobbies;
 
     public User() {
     }

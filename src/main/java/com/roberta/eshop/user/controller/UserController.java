@@ -4,13 +4,16 @@ import com.roberta.eshop.user.model.User;
 import com.roberta.eshop.user.persistence.ResourceNotFoundException;
 import com.roberta.eshop.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
     @Autowired
     private UserRepository userRepository;
@@ -22,7 +25,7 @@ public class UserController {
         return userRepository.save(user);
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -30,25 +33,27 @@ public class UserController {
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Integer id) {
         Optional<User> user = userRepository.findById(id);
-
         if (user.isEmpty())
             throw new ResourceNotFoundException("UserId not found " + id);
-
         return user.get();
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@RequestBody User user, @PathVariable Integer id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isEmpty())
+    public ResponseEntity<User> updateUser(@Valid @RequestBody User userDetails, @PathVariable Integer id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty())
             throw new ResourceNotFoundException("UserId not found " + id);
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        user.setId(id);
-        return userRepository.save(user);
+        userDetails.setPassword(new BCryptPasswordEncoder().encode(userDetails.getPassword()));
+        userDetails.setId(id);
+        final User updatedUser = userRepository.save(userDetails);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteStudent(@PathVariable Integer id) {
-        userRepository.deleteById(id);
+    public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
+        return userRepository.findById(id).map(user -> {
+            userRepository.delete(user);
+            return ResponseEntity.ok().build();
+        }).orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
     }
 }

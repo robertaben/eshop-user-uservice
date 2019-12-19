@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class AddressController {
     @Autowired
     private AddressRepository addressRepository;
@@ -21,12 +21,11 @@ public class AddressController {
 
     @GetMapping("/{userId}/address")
     public List<Address> getAllAddressesByUserId(@PathVariable(value = "userId") Integer userId, Address address) {
-       return addressRepository.findByUserId(userId);
-
+        return addressRepository.findByUserId(userId);
     }
 
     @PostMapping("/{userId}/address")
-    public Address createAddress(@PathVariable (value = "userId") Integer userId, @Valid @RequestBody Address address) {
+    public Address createAddress(@PathVariable(value = "userId") Integer userId, @Valid @RequestBody Address address) {
         return userRepository.findById(userId).map(user -> {
             address.setUser(user);
             return addressRepository.save(address);
@@ -34,10 +33,10 @@ public class AddressController {
     }
 
     @PutMapping("/{userId}/address/{addressId}")
-    public Address updateAddress(@PathVariable (value = "userId") Integer userId,
-                                 @PathVariable (value = "addressId") Integer addressId,
+    public Address updateAddress(@PathVariable(value = "userId") Integer userId,
+                                 @PathVariable(value = "addressId") Integer addressId,
                                  @Valid @RequestBody Address addressRequest) {
-        if(!userRepository.existsById(userId)) {
+        if (!userRepository.existsById(userId)) {
             throw new ResourceNotFoundException("UserId " + userId + " not found");
         }
 
@@ -52,15 +51,11 @@ public class AddressController {
     }
 
     @DeleteMapping("/{userId}/address/{addressId}")
-    public ResponseEntity<?> deleteAddress(@PathVariable (value = "userId") Integer userId,
-                                           @PathVariable (value = "addressId") Integer addressId) {
+    public ResponseEntity<?> deleteAddress(@PathVariable(value = "userId") Integer userId,
+                                           @PathVariable(value = "addressId") Integer addressId) {
         return addressRepository.findByIdAndUserId(addressId, userId).map(address -> {
             addressRepository.delete(address);
             return ResponseEntity.ok().build();
         }).orElseThrow(() -> new ResourceNotFoundException("Comment not found with id " + addressId + " and postId " + userId));
     }
-
-
-
-
 }

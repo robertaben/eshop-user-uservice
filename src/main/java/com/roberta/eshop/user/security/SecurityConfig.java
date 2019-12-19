@@ -1,6 +1,5 @@
 package com.roberta.eshop.user.security;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests().antMatchers("/user*", "/user/*").permitAll();
+        http.csrf().disable().authorizeRequests().antMatchers("/user*", "/user/*", "/hobbies*","hobbies/**").permitAll();
     }
 
     @Bean

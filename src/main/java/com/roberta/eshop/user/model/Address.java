@@ -1,11 +1,15 @@
 package com.roberta.eshop.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Entity
-@Table(name="addresses")
+@Table(name = "addresses")
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,16 +36,42 @@ public class Address {
     @NotNull
     private String zipCode;
 
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false, nullable = false)
+    private Date created;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
+    private Date updated;
+
     public Address() {
     }
 
-    public Address(User user, @NotNull Boolean addressType, @NotNull String street, @NotNull int houseNumber, @NotNull String city, @NotNull String zipCode) {
+    public Address(User user, @NotNull Boolean addressType, @NotNull String street, @NotNull int houseNumber, @NotNull String city, @NotNull String zipCode, Date created, Date updated) {
         this.user = user;
         this.addressType = addressType;
         this.street = street;
         this.houseNumber = houseNumber;
         this.city = city;
         this.zipCode = zipCode;
+        this.created = created;
+        this.updated = updated;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
     }
 
     public Integer getId() {
