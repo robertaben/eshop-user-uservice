@@ -34,7 +34,7 @@ public class UserController {
     public User getUserById(@PathVariable Integer id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isEmpty())
-            throw new ResourceNotFoundException("UserId not found " + id);
+            throw new ResourceNotFoundException("User not found with id " + id);
         return user.get();
     }
 
@@ -42,7 +42,7 @@ public class UserController {
     public ResponseEntity<User> updateUser(@Valid @RequestBody User userDetails, @PathVariable Integer id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isEmpty())
-            throw new ResourceNotFoundException("UserId not found " + id);
+            throw new ResourceNotFoundException("User not found with id " + id);
         userDetails.setPassword(new BCryptPasswordEncoder().encode(userDetails.getPassword()));
         userDetails.setId(id);
         final User updatedUser = userRepository.save(userDetails);

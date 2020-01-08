@@ -45,6 +45,7 @@ public class User {
     public User() {
     }
 
+
     public User(@NotNull String name, @NotNull String email, @NotNull String password, Date created, Date updated, List<Address> addresses) {
         this.name = name;
         this.email = email;

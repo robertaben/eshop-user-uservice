@@ -21,8 +21,8 @@ public class Address {
     @JsonIgnore
     private User user;
 
-    @NotNull
-    private Boolean addressType;
+    @Enumerated(EnumType.STRING)
+    private AddressType addressType;
 
     @NotNull
     private String street;
@@ -47,15 +47,12 @@ public class Address {
     public Address() {
     }
 
-    public Address(User user, @NotNull Boolean addressType, @NotNull String street, @NotNull int houseNumber, @NotNull String city, @NotNull String zipCode, Date created, Date updated) {
-        this.user = user;
+    public AddressType getAddressType() {
+        return addressType;
+    }
+
+    public void setAddressType(AddressType addressType) {
         this.addressType = addressType;
-        this.street = street;
-        this.houseNumber = houseNumber;
-        this.city = city;
-        this.zipCode = zipCode;
-        this.created = created;
-        this.updated = updated;
     }
 
     public Date getCreated() {
@@ -88,14 +85,6 @@ public class Address {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public Boolean getAddressType() {
-        return addressType;
-    }
-
-    public void setAddressType(Boolean addressType) {
-        this.addressType = addressType;
     }
 
     public String getStreet() {

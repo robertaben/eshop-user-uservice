@@ -1,6 +1,7 @@
 package com.roberta.eshop.user.controller;
 
 import com.roberta.eshop.user.model.Address;
+import com.roberta.eshop.user.model.AddressType;
 import com.roberta.eshop.user.persistence.ResourceNotFoundException;
 import com.roberta.eshop.user.repository.AddressRepository;
 import com.roberta.eshop.user.repository.UserRepository;
@@ -21,6 +22,8 @@ public class AddressController {
 
     @GetMapping("/{userId}/address")
     public List<Address> getAllAddressesByUserId(@PathVariable(value = "userId") Integer userId, Address address) {
+        if (userRepository.findById(userId).isEmpty())
+            throw new ResourceNotFoundException("UserId not found " + userId);
         return addressRepository.findByUserId(userId);
     }
 
@@ -28,6 +31,8 @@ public class AddressController {
     public Address createAddress(@PathVariable(value = "userId") Integer userId, @Valid @RequestBody Address address) {
         return userRepository.findById(userId).map(user -> {
             address.setUser(user);
+            if(address.getAddressType() == null)
+                address.setAddressType(AddressType.SHIPPING);
             return addressRepository.save(address);
         }).orElseThrow(() -> new ResourceNotFoundException("id-" + userId));
     }
@@ -56,6 +61,6 @@ public class AddressController {
         return addressRepository.findByIdAndUserId(addressId, userId).map(address -> {
             addressRepository.delete(address);
             return ResponseEntity.ok().build();
-        }).orElseThrow(() -> new ResourceNotFoundException("Comment not found with id " + addressId + " and postId " + userId));
+        }).orElseThrow(() -> new ResourceNotFoundException("AddressId not found with id " + addressId + " and userId " + userId));
     }
 }
